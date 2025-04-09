@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,12 +17,21 @@ public class EnvironmentManager : MonoBehaviour
     [SerializeField] private Button deleteButton2;
     [SerializeField] private Button deleteButton3;
 
+    // Enter buttons for environments
+    public Button enterButton1;
+    public Button enterButton2;
+    public Button enterButton3;
+
+    // Exit button
+    public Button exitButton;
+
     // Warning text
     [SerializeField] private TMP_Text warningText;
 
     // All Scenes
     public GameObject Scene2;
     public GameObject Scene3;
+    public GameObject Scene4; // Referentie naar Scene4
 
     // All important elements of scene 2
     public TMP_Text Env1Text;
@@ -50,6 +60,14 @@ public class EnvironmentManager : MonoBehaviour
         deleteButton2.onClick.AddListener(() => DeleteEnvironment(2));
         deleteButton3.onClick.AddListener(() => DeleteEnvironment(3));
 
+        // Voeg listeners toe aan de enter-knoppen
+        enterButton1.onClick.AddListener(() => SetActiveEnvironment(1));
+        enterButton2.onClick.AddListener(() => SetActiveEnvironment(2));
+        enterButton3.onClick.AddListener(() => SetActiveEnvironment(3));
+
+        // Voeg listener toe aan de exit-knop
+        exitButton.onClick.AddListener(ExitToScene2);
+
         UpdateUI();
         warningText.gameObject.SetActive(false); // Hide warning text initially
     }
@@ -62,12 +80,14 @@ public class EnvironmentManager : MonoBehaviour
             Env1Text.text = "Environment 1: " + environmentName1;
             deleteButton1.interactable = true;
             createButton1.gameObject.SetActive(false);
+            enterButton1.interactable = true;
         }
         else
         {
             Env1Text.text = "No Environment";
             deleteButton1.interactable = false;
             createButton1.gameObject.SetActive(true);
+            enterButton1.interactable = false;
         }
 
         if (!string.IsNullOrEmpty(environmentName2))
@@ -75,12 +95,14 @@ public class EnvironmentManager : MonoBehaviour
             Env2Text.text = "Environment 2: " + environmentName2;
             deleteButton2.interactable = true;
             createButton2.gameObject.SetActive(false);
+            enterButton2.interactable = true;
         }
         else
         {
             Env2Text.text = "No Environment";
             deleteButton2.interactable = false;
             createButton2.gameObject.SetActive(true);
+            enterButton2.interactable = false;
         }
 
         if (!string.IsNullOrEmpty(environmentName3))
@@ -88,12 +110,14 @@ public class EnvironmentManager : MonoBehaviour
             Env3Text.text = "Environment 3: " + environmentName3;
             deleteButton3.interactable = true;
             createButton3.gameObject.SetActive(false);
+            enterButton3.interactable = true;
         }
         else
         {
             Env3Text.text = "No Environment";
             deleteButton3.interactable = false;
             createButton3.gameObject.SetActive(true);
+            enterButton3.interactable = false;
         }
     }
 
@@ -178,25 +202,117 @@ public class EnvironmentManager : MonoBehaviour
         }
     }
 
-
-    private void DeleteEnvironment(int index)
+    public async void FetchEnvironments()
     {
+        Debug.Log("Fetching environments...");
+
+        IWebRequestReponse webRequestResponse = await environment2DApiClient.ReadEnvironment2Ds();
+
+        switch (webRequestResponse)
+        {
+            case WebRequestData<List<Environment2D>> dataResponse:
+                List<Environment2D> environments = dataResponse.Data;
+                DisplayEnvironments(environments);
+                break;
+            case WebRequestError errorResponse:
+                Debug.LogError("Read environments error: " + errorResponse.ErrorMessage);
+                break;
+            default:
+                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+        }
+    }
+
+    private void DisplayEnvironments(List<Environment2D> environments)
+    {
+        // Clear existing environment names
+        environmentName1 = null;
+        environmentName2 = null;
+        environmentName3 = null;
+
+        // Display environment names
+        for (int i = 0; i < environments.Count; i++)
+        {
+            switch (i)
+            {
+                case 0:
+                    environmentName1 = environments[i].name;
+                    break;
+                case 1:
+                    environmentName2 = environments[i].name;
+                    break;
+                case 2:
+                    environmentName3 = environments[i].name;
+                    break;
+            }
+        }
+
+        UpdateUI();
+    }
+
+    private async void DeleteEnvironment(int index)
+    {
+        string environmentName = null;
         switch (index)
         {
             case 1:
+                environmentName = environmentName1;
                 environmentName1 = null;
                 break;
             case 2:
+                environmentName = environmentName2;
                 environmentName2 = null;
                 break;
             case 3:
+                environmentName = environmentName3;
                 environmentName3 = null;
                 break;
         }
 
-        PlayerPrefs.DeleteKey("EnvironmentName" + index);
-        Debug.Log("Environment " + index + " deleted.");
-        UpdateUI();
+        if (environmentName != null)
+        {
+            try
+            {
+                IWebRequestReponse webRequestResponse = await environment2DApiClient.DeleteEnvironment(environmentName);
+
+                switch (webRequestResponse)
+                {
+                    case WebRequestData<string> dataResponse:
+                        Debug.Log("Environment deletion success!");
+                        PlayerPrefs.DeleteKey("EnvironmentName" + index);
+                        UpdateUI();
+                        break;
+                    case WebRequestError errorResponse:
+                        string errorMessage = errorResponse.ErrorMessage;
+                        Debug.Log("Environment deletion error: " + errorMessage);
+                        break;
+                    default:
+                        throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Environment deletion exception: " + ex.Message);
+            }
+        }
+    }
+
+    public void SetActiveEnvironment(int index)
+    {
+        // Hier kun je de logica toevoegen om de objecten te laden die bij de geselecteerde environment horen
+        Debug.Log($"Environment {index} is now active.");
+        // Laad de objecten die bij de geselecteerde environment horen
+        LoadObjectsForEnvironment(index);
+
+        // Zet Scene4 op active en Scene2 op inactive
+        Scene4.SetActive(true);
+        Scene2.SetActive(false);
+    }
+
+    private void LoadObjectsForEnvironment(int index)
+    {
+        // Laad de objecten die bij de geselecteerde environment horen
+        // Dit is een voorbeeld en moet worden aangepast aan jouw specifieke logica
+        Debug.Log($"Loading objects for environment {index}.");
     }
 
     private void BackToScene2()
@@ -207,7 +323,23 @@ public class EnvironmentManager : MonoBehaviour
         environmentNameInputField.onValueChanged.RemoveListener(OnEnvironmentNameChanged);
         warningText.gameObject.SetActive(false); // Hide warning text when going back
     }
+
+    private void ExitToScene2()
+    {
+        Scene4.SetActive(false);
+        Scene2.SetActive(true);
+    }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

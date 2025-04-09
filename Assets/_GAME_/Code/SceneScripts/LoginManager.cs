@@ -13,6 +13,7 @@ public class LoginManager : MonoBehaviour
     public UserApiClient userApiClient;
     public GameObject SceneLoginRegister; // Referentie naar het login/register paneel
     public GameObject ChooseEnvironment;  // Referentie naar het choose environment paneel
+    public EnvironmentManager environmentManager; // Referentie naar de EnvironmentManager
 
     private void Start()
     {
@@ -83,6 +84,7 @@ public class LoginManager : MonoBehaviour
                     PlayerPrefs.Save();
                     SceneLoginRegister.SetActive(false); // Verberg het login/register paneel
                     ChooseEnvironment.SetActive(true);  // Toon het choose environment paneel
+                    environmentManager.FetchEnvironments(); // Fetch environments after login
                     break;
                 case WebRequestError errorResponse:
                     string errorMessage = errorResponse.ErrorMessage;

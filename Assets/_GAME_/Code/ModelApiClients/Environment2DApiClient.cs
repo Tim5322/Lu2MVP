@@ -25,7 +25,6 @@ public class Environment2DApiClient : MonoBehaviour
         return ParseEnvironment2DResponse(webRequestResponse);
     }
 
-
     public async Awaitable<IWebRequestReponse> DeleteEnvironment(string environmentId)
     {
         string route = "/environment2Ds/" + environmentId;
@@ -46,7 +45,6 @@ public class Environment2DApiClient : MonoBehaviour
         }
     }
 
-
     private IWebRequestReponse ParseEnvironment2DListResponse(IWebRequestReponse webRequestResponse)
     {
         switch (webRequestResponse)
@@ -60,4 +58,23 @@ public class Environment2DApiClient : MonoBehaviour
                 return webRequestResponse;
         }
     }
+
+    public async void GetAllEnvironmentInfo()
+    {
+        Debug.LogError("Environments worden geladen");
+        IWebRequestReponse response = await ReadEnvironment2Ds();
+        if (response is WebRequestData<List<Environment2D>> environment2DsData)
+        {
+            List<Environment2D> environment2Ds = environment2DsData.Data;
+            foreach (var environment2D in environment2Ds)
+            {
+                Debug.Log($"ID: {environment2D.id}, Name: {environment2D.name}");
+            }
+        }
+        else
+        {
+            Debug.LogError("Failed to retrieve environments.");
+        }
+    }
 }
+
