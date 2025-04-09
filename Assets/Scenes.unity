@@ -43872,15 +43872,15 @@ MonoBehaviour:
   environment2D:
     id: 8d3cd22e-120a-460c-8efe-c1dac57a4186
     name: ahgbaj
-  obj:
+  object2D:
     id: 
-    environmentId: 
     prefabId: 
     positionX: 0
     positionY: 0
+    environmentId: 
   userApiClient: {fileID: 2046676028}
   enviroment2DApiClient: {fileID: 2046676031}
-  objectApiClient: {fileID: 2046676030}
+  object2DApiClient: {fileID: 2046676030}
 --- !u!4 &1433886679
 Transform:
   m_ObjectHideFlags: 0
@@ -44175,7 +44175,7 @@ Transform:
   m_GameObject: {fileID: 1526688886}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -33.6, y: -5.424191, z: 1.2683532}
+  m_LocalPosition: {x: -27.4, y: -19.6, z: 1.2683532}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -45019,6 +45019,7 @@ MonoBehaviour:
   - {fileID: 5865255630757563956, guid: 251936163291cc94cacc97caefe526fc, type: 3}
   - {fileID: 5574886132160679925, guid: 707f3bdb3adf94c4a821ed1177bb580e, type: 3}
   - {fileID: 5546881560192215976, guid: 8b3024c32e0a2ca4e8645a2894ddf18e, type: 3}
+  object2DApiClient: {fileID: 2046676030}
 --- !u!4 &1775009285
 Transform:
   m_ObjectHideFlags: 0

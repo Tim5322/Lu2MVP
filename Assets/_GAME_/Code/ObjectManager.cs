@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using YourNamespace.ApiClient;
 
 public class ObjectManager : MonoBehaviour
 {
@@ -11,7 +12,13 @@ public class ObjectManager : MonoBehaviour
     public List<GameObject> prefabObjects;
 
     // Lijst met objecten die geplaatst zijn in de wereld
-    private List<GameObject> placedObjects;
+    private List<GameObject> placedObjects = new List<GameObject>();
+
+    // Referentie naar Object2DApiClient
+    public Object2DApiClient object2DApiClient;
+
+    // Veld voor het actieve environmentId
+    private string activeEnvironmentId;
 
     // Methode om een nieuw 2D object te plaatsen
     public void PlaceNewObject2D(int index)
@@ -20,12 +27,20 @@ public class ObjectManager : MonoBehaviour
         UISideMenu.SetActive(false);
         // Instantieer het prefab object op de positie (0,0,0) met geen rotatie
         GameObject instanceOfPrefab = Instantiate(prefabObjects[index], Vector3.zero, Quaternion.identity);
-        // Haal het Object2D component op van het nieuw geplaatste object
-        Object2D object2D = instanceOfPrefab.GetComponent<Object2D>();
+        // Haal het IsDragging component op van het nieuw geplaatste object
+        IsDragging isDragging = instanceOfPrefab.GetComponent<IsDragging>();
         // Stel de objectManager van het object in op deze instantie van ObjectManager
-        object2D.objectManager = this;
+        isDragging.objectManager = this;
         // Zet de isDragging eigenschap van het object op true zodat het gesleept kan worden
-        object2D.isDragging = true;
+        isDragging.isDragging = true;
+        // Stel het environmentId in op het IsDragging component
+        isDragging.environmentId = activeEnvironmentId;
+    }
+
+    // Methode om het actieve environmentId in te stellen
+    public void SetActiveEnvironmentId(string environmentId)
+    {
+        activeEnvironmentId = environmentId;
     }
 
     // Methode om het menu te tonen
@@ -40,4 +55,23 @@ public class ObjectManager : MonoBehaviour
         // Laad de huidige scène opnieuw
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    // Methode om een nieuw Object2D aan te maken in de API
+    public async void CreateObject2DInApi(Object2D object2D)
+    {
+        Debug.Log($"Creating new Object2D with data: {JsonUtility.ToJson(object2D)}");
+        IWebRequestReponse response = await object2DApiClient.CreateObject2D(object2D);
+        Debug.Log($"Received response: {response}");
+        if (response is WebRequestData<Object2D> createdObject2D)
+        {
+            Debug.Log($"Object2D created successfully with ID: {createdObject2D.Data.id}");
+            // Update the local object with the ID from the backend
+            object2D.id = createdObject2D.Data.id;
+        }
+        else
+        {
+            Debug.LogError("Failed to create Object2D.");
+        }
+    }
 }
+

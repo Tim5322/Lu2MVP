@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using YourNamespace.ApiClient;
 
 public class GrassGameApp : MonoBehaviour
 {
     [Header("Test data")]
     public User user;
     public Environment2D environment2D;
-    public Object obj;
+    public Object2D object2D;
 
     [Header("Dependencies")]
     public UserApiClient userApiClient;
     public Environment2DApiClient enviroment2DApiClient;
-    public Object2DApiClient objectApiClient;
+    public Object2DApiClient object2DApiClient;
 
     #region Login
 
@@ -129,73 +130,74 @@ public class GrassGameApp : MonoBehaviour
 
     #endregion Environment
 
-    #region Object
+    #region Object2D
 
-    [ContextMenu("Object/Read all")]
-    public async void ReadObjects()
-    {
-        IWebRequestReponse webRequestResponse = await objectApiClient.ReadObjects(obj.environmentId);
+    //[ContextMenu("Object2D/Read all")]
+    //public async void ReadObject2Ds()
+    //{
+    //    IWebRequestReponse webRequestResponse = await object2DApiClient.ReadObject2Ds(object2D.environmentId);
 
-        switch (webRequestResponse)
-        {
-            case WebRequestData<List<Object>> dataResponse:
-                List<Object> objects = dataResponse.Data;
-                Debug.Log("List of objects: " + objects);
-                objects.ForEach(obj => Debug.Log(obj.id));
-                // TODO: Succes scenario. Show the enviroments in the UI
-                break;
-            case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Read objects error: " + errorMessage);
-                // TODO: Error scenario. Show the errormessage to the user.
-                break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
-        }
-    }
+    //    switch (webRequestResponse)
+    //    {
+    //        case WebRequestData<List<Object2D>> dataResponse:
+    //            List<Object2D> object2Ds = dataResponse.Data;
+    //            Debug.Log("List of object2Ds: " + object2Ds);
+    //            object2Ds.ForEach(object2D => Debug.Log(object2D.id));
+    //            // TODO: Succes scenario. Show the enviroments in the UI
+    //            break;
+    //        case WebRequestError errorResponse:
+    //            string errorMessage = errorResponse.ErrorMessage;
+    //            Debug.Log("Read object2Ds error: " + errorMessage);
+    //            // TODO: Error scenario. Show the errormessage to the user.
+    //            break;
+    //        default:
+    //            throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+    //    }
+    //}
 
-    [ContextMenu("Object/Create")]
-    public async void CreateObject()
-    {
-        IWebRequestReponse webRequestResponse = await objectApiClient.CreateObject(obj);
+    //[ContextMenu("Object2D/Create")]
+    //public async void CreateObject2D()
+    //{
+    //    IWebRequestReponse webRequestResponse = await object2DApiClient.CreateObject2D(object2D);
 
-        switch (webRequestResponse)
-        {
-            case WebRequestData<Object> dataResponse:
-                obj.id = dataResponse.Data.id;
-                // TODO: Handle succes scenario.
-                break;
-            case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Create Object error: " + errorMessage);
-                // TODO: Handle error scenario. Show the errormessage to the user.
-                break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
-        }
-    }
+    //    switch (webRequestResponse)
+    //    {
+    //        case WebRequestData<Object2D> dataResponse:
+    //            object2D.id = dataResponse.Data.id;
+    //            // TODO: Handle succes scenario.
+    //            break;
+    //        case WebRequestError errorResponse:
+    //            string errorMessage = errorResponse.ErrorMessage;
+    //            Debug.Log("Create Object2D error: " + errorMessage);
+    //            // TODO: Handle error scenario. Show the errormessage to the user.
+    //            break;
+    //        default:
+    //            throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+    //    }
+    //}
 
-    [ContextMenu("Object/Update")]
-    public async void UpdateObject()
-    {
-        IWebRequestReponse webRequestResponse = await objectApiClient.UpdateObject(obj);
+    //[ContextMenu("Object2D/Update")]
+    //public async void UpdateObject2D()
+    //{
+    //    IWebRequestReponse webRequestResponse = await object2DApiClient.UpdateObject2D(object2D);
 
-        switch (webRequestResponse)
-        {
-            case WebRequestData<string> dataResponse:
-                string responseData = dataResponse.Data;
-                // TODO: Handle succes scenario.
-                break;
-            case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Update object error: " + errorMessage);
-                // TODO: Handle error scenario. Show the errormessage to the user.
-                break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
-        }
-    }
+    //    switch (webRequestResponse)
+    //    {
+    //        case WebRequestData<string> dataResponse:
+    //            string responseData = dataResponse.Data;
+    //            // TODO: Handle succes scenario.
+    //            break;
+    //        case WebRequestError errorResponse:
+    //            string errorMessage = errorResponse.ErrorMessage;
+    //            Debug.Log("Update object2D error: " + errorMessage);
+    //            // TODO: Handle error scenario. Show the errormessage to the user.
+    //            break;
+    //        default:
+    //            throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+    //    }
+    //}
 
     #endregion
+
 
 }

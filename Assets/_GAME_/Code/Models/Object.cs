@@ -2,16 +2,15 @@ using System;
 using UnityEngine;
 
 [Serializable]
-
-public class Object
+public class Object2D
 {
     public string id;
-
-    public string environmentId;
 
     public string prefabId;
 
     public int positionX;
 
     public int positionY;
+
+    public string environmentId;
 }

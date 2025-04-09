@@ -2,9 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Object2D : MonoBehaviour
+public class IsDragging : MonoBehaviour
 {
     public ObjectManager objectManager;
+    public string environmentId; // Voeg een veld toe voor de environmentId
 
     public bool isDragging = false;
 
@@ -21,6 +22,18 @@ public class Object2D : MonoBehaviour
         if (!isDragging)
         {
             objectManager.ShowMenu();
+
+            // Maak een nieuw Object2D aan zonder id
+            Object2D newObject2D = new Object2D
+            {
+                prefabId = gameObject.name,
+                positionX = (int)transform.position.x,
+                positionY = (int)transform.position.y,
+                environmentId = environmentId // Gebruik het environmentId
+            };
+
+            // Roep de CreateObject2DInApi-methode aan om het object naar de API te sturen
+            objectManager.CreateObject2DInApi(newObject2D);
         }
     }
 
@@ -30,5 +43,7 @@ public class Object2D : MonoBehaviour
         positionInWorld.z = 0;
         return positionInWorld;
     }
-
 }
+
+
+

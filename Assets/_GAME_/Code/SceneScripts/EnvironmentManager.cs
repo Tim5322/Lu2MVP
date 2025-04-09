@@ -44,6 +44,11 @@ public class EnvironmentManager : MonoBehaviour
     private string environmentName3;
     private int currentEnvironmentIndex;
 
+    // Environment IDs
+    private string environmentId1;
+    private string environmentId2;
+    private string environmentId3;
+
     // API Client
     public Environment2DApiClient environment2DApiClient;
 
@@ -171,20 +176,25 @@ public class EnvironmentManager : MonoBehaviour
             {
                 case WebRequestData<Environment2D> dataResponse:
                     Debug.Log("Environment creation success!");
+                    Environment2D createdEnvironment = dataResponse.Data;
                     switch (currentEnvironmentIndex)
                     {
                         case 1:
-                            environmentName1 = environmentName;
+                            environmentName1 = createdEnvironment.name;
+                            environmentId1 = createdEnvironment.id;
                             break;
                         case 2:
-                            environmentName2 = environmentName;
+                            environmentName2 = createdEnvironment.name;
+                            environmentId2 = createdEnvironment.id;
                             break;
                         case 3:
-                            environmentName3 = environmentName;
+                            environmentName3 = createdEnvironment.name;
+                            environmentId3 = createdEnvironment.id;
                             break;
                     }
 
-                    PlayerPrefs.SetString("EnvironmentName" + currentEnvironmentIndex, environmentName);
+                    PlayerPrefs.SetString("EnvironmentName" + currentEnvironmentIndex, createdEnvironment.name);
+                    PlayerPrefs.SetString("EnvironmentId" + currentEnvironmentIndex, createdEnvironment.id);
                     UpdateUI();
                     BackToScene2();
                     break;
@@ -224,24 +234,30 @@ public class EnvironmentManager : MonoBehaviour
 
     private void DisplayEnvironments(List<Environment2D> environments)
     {
-        // Clear existing environment names
+        // Clear existing environment names and IDs
         environmentName1 = null;
         environmentName2 = null;
         environmentName3 = null;
+        environmentId1 = null;
+        environmentId2 = null;
+        environmentId3 = null;
 
-        // Display environment names
+        // Display environment names and IDs
         for (int i = 0; i < environments.Count; i++)
         {
             switch (i)
             {
                 case 0:
                     environmentName1 = environments[i].name;
+                    environmentId1 = environments[i].id;
                     break;
                 case 1:
                     environmentName2 = environments[i].name;
+                    environmentId2 = environments[i].id;
                     break;
                 case 2:
                     environmentName3 = environments[i].name;
+                    environmentId3 = environments[i].id;
                     break;
             }
         }
@@ -251,34 +267,38 @@ public class EnvironmentManager : MonoBehaviour
 
     private async void DeleteEnvironment(int index)
     {
-        string environmentName = null;
+        string environmentId = null;
         switch (index)
         {
             case 1:
-                environmentName = environmentName1;
+                environmentId = environmentId1;
                 environmentName1 = null;
+                environmentId1 = null;
                 break;
             case 2:
-                environmentName = environmentName2;
+                environmentId = environmentId2;
                 environmentName2 = null;
+                environmentId2 = null;
                 break;
             case 3:
-                environmentName = environmentName3;
+                environmentId = environmentId3;
                 environmentName3 = null;
+                environmentId3 = null;
                 break;
         }
 
-        if (environmentName != null)
+        if (environmentId != null)
         {
             try
             {
-                IWebRequestReponse webRequestResponse = await environment2DApiClient.DeleteEnvironment(environmentName);
+                IWebRequestReponse webRequestResponse = await environment2DApiClient.DeleteEnvironment(environmentId);
 
                 switch (webRequestResponse)
                 {
                     case WebRequestData<string> dataResponse:
                         Debug.Log("Environment deletion success!");
                         PlayerPrefs.DeleteKey("EnvironmentName" + index);
+                        PlayerPrefs.DeleteKey("EnvironmentId" + index);
                         UpdateUI();
                         break;
                     case WebRequestError errorResponse:
