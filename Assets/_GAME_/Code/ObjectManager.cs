@@ -16,6 +16,9 @@ public class ObjectManager : MonoBehaviour
 
     // Referentie naar Object2DApiClient
     public Object2DApiClient object2DApiClient;
+    public Environment2DApiClient environment2DApiClient;
+
+    public IsDragging isDragging;
 
     // Veld voor het actieve environmentId
     private string activeEnvironmentId;
@@ -59,9 +62,13 @@ public class ObjectManager : MonoBehaviour
     // Methode om een nieuw Object2D aan te maken in de API
     public async void CreateObject2DInApi(Object2D object2D)
     {
+        // Zorg ervoor dat het object het juiste environment2DId heeft
+        object2D.environment2DId = activeEnvironmentId;
+
+        //IWebRequestReponse response = await agendaApiClient.CreateAgenda(profielkeuzeId, newAgenda);
         Debug.Log($"Creating new Object2D with data: {JsonUtility.ToJson(object2D)}");
         IWebRequestReponse response = await object2DApiClient.CreateObject2D(object2D);
-        Debug.Log($"Received response: {response}");
+        Debug.Log($"Received response: {response}");    
         if (response is WebRequestData<Object2D> createdObject2D)
         {
             Debug.Log($"Object2D created successfully with ID: {createdObject2D.Data.id}");
@@ -74,4 +81,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 }
+
+
+
 

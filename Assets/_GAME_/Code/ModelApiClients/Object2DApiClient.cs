@@ -37,6 +37,7 @@ namespace YourNamespace.ApiClient
             }
         }
 
+
         public async Awaitable<IWebRequestReponse> DeleteObject2D(string object2DId)
         {
             string route = $"/api/object2d/{object2DId}"; // Use the base route for deleting an object2D
@@ -91,7 +92,7 @@ namespace YourNamespace.ApiClient
                 List<Object2D> object2Ds = object2DsData.Data;
                 foreach (var object2D in object2Ds)
                 {
-                    Debug.Log($"ID: {object2D.id}, PrefabId: {object2D.prefabId}, PositionX: {object2D.positionX}, PositionY: {object2D.positionY},  EnvironmentId: {object2D.environmentId}");
+                    Debug.Log($"ID: {object2D.id}, PrefabId: {object2D.prefabId}, PositionX: {object2D.positionX}, PositionY: {object2D.positionY},  EnvironmentId: {object2D.environment2DId}");
                 }
             }
             else

@@ -51,6 +51,7 @@ public class EnvironmentManager : MonoBehaviour
 
     // API Client
     public Environment2DApiClient environment2DApiClient;
+    public ObjectManager objectManager; // Reference to ObjectManager
 
     private void Start()
     {
@@ -197,6 +198,9 @@ public class EnvironmentManager : MonoBehaviour
                     PlayerPrefs.SetString("EnvironmentId" + currentEnvironmentIndex, createdEnvironment.id);
                     UpdateUI();
                     BackToScene2();
+
+                    // Update the active environment ID in ObjectManager
+                    objectManager.SetActiveEnvironmentId(createdEnvironment.id);
                     break;
                 case WebRequestError errorResponse:
                     string errorMessage = errorResponse.ErrorMessage;
@@ -326,6 +330,20 @@ public class EnvironmentManager : MonoBehaviour
         // Zet Scene4 op active en Scene2 op inactive
         Scene4.SetActive(true);
         Scene2.SetActive(false);
+
+        // Update the active environment ID in ObjectManager
+        switch (index)
+        {
+            case 1:
+                objectManager.SetActiveEnvironmentId(environmentId1);
+                break;
+            case 2:
+                objectManager.SetActiveEnvironmentId(environmentId2);
+                break;
+            case 3:
+                objectManager.SetActiveEnvironmentId(environmentId3);
+                break;
+        }
     }
 
     private void LoadObjectsForEnvironment(int index)
@@ -350,6 +368,8 @@ public class EnvironmentManager : MonoBehaviour
         Scene2.SetActive(true);
     }
 }
+
+
 
 
 

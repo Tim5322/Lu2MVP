@@ -29,7 +29,7 @@ public class IsDragging : MonoBehaviour
                 prefabId = gameObject.name,
                 positionX = (int)transform.position.x,
                 positionY = (int)transform.position.y,
-                environmentId = environmentId // Gebruik het environmentId
+                environment2DId = environmentId // Gebruik het environmentId
             };
 
             // Roep de CreateObject2DInApi-methode aan om het object naar de API te sturen
