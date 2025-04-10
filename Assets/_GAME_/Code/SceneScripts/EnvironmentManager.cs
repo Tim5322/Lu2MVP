@@ -77,7 +77,7 @@ public class EnvironmentManager : MonoBehaviour
         UpdateUI();
         warningText.gameObject.SetActive(false); // Hide warning text initially
 
-        if(objectManager == null)
+        if (objectManager == null)
         {
             objectManager = FindFirstObjectByType<ObjectManager>();
         }
@@ -301,6 +301,26 @@ public class EnvironmentManager : MonoBehaviour
         {
             try
             {
+                // Fetch and delete all objects associated with the environment
+                IWebRequestReponse objectResponse = await objectManager.object2DApiClient.ReadObject2Ds(environmentId);
+                if (objectResponse is WebRequestData<List<Object2D>> object2DListResponse)
+                {
+                    List<Object2D> object2DList = object2DListResponse.Data;
+                    foreach (var object2D in object2DList)
+                    {
+                        IWebRequestReponse deleteObjectResponse = await objectManager.object2DApiClient.DeleteObject2D(object2D.id.ToString());
+                        if (deleteObjectResponse is WebRequestError deleteObjectError)
+                        {
+                            Debug.LogError($"Failed to delete Object2D with ID: {object2D.id}. Error: {deleteObjectError.ErrorMessage}");
+                        }
+                    }
+                }
+                else if (objectResponse is WebRequestError objectError)
+                {
+                    Debug.LogError($"Failed to fetch Object2Ds for environment ID: {environmentId}. Error: {objectError.ErrorMessage}");
+                }
+
+                // Delete the environment
                 IWebRequestReponse webRequestResponse = await environment2DApiClient.DeleteEnvironment(environmentId);
 
                 switch (webRequestResponse)
@@ -313,7 +333,7 @@ public class EnvironmentManager : MonoBehaviour
                         break;
                     case WebRequestError errorResponse:
                         string errorMessage = errorResponse.ErrorMessage;
-                        Debug.Log("Environment deletion error: " + errorMessage);
+                        Debug.LogError($"Environment deletion error: {errorMessage}");
                         break;
                     default:
                         throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
@@ -374,6 +394,8 @@ public class EnvironmentManager : MonoBehaviour
         Scene2.SetActive(true);
     }
 }
+
+
 
 
 
