@@ -99,12 +99,47 @@ public class ObjectManager : MonoBehaviour
             {
                 Debug.Log($"Object2D: {JsonUtility.ToJson(object2D)}");
                 // Instantiate or update objects in the scene based on the loaded data
+                InstantiateObject2D(object2D);
             }
         }
         else
         {
             Debug.LogError("Failed to load Object2Ds.");
         }
+    }
+
+    // Helper method to instantiate or update Object2D in the scene
+    private void InstantiateObject2D(Object2D object2D)
+    {
+        // Find the prefab by name
+        GameObject prefab = prefabObjects.Find(p => p.name == object2D.prefabId);
+        if (prefab == null)
+        {
+            Debug.LogError($"Prefab with name {object2D.prefabId} not found.");
+            return;
+        }
+
+        // Instantiate the prefab at the specified position
+        Vector3 position = new Vector3(object2D.positionX, object2D.positionY, 0);
+        GameObject instance = Instantiate(prefab, position, Quaternion.identity);
+
+        // Set the environment ID and other properties if needed
+        IsDragging isDragging = instance.GetComponent<IsDragging>();
+        if (isDragging != null)
+        {
+            isDragging.environmentId = object2D.environment2DId;
+            isDragging.objectManager = this;
+        }
+
+        // Name the instance and parent it under a specific GameObject in the hierarchy
+        instance.name = $"{prefab.name}_Clone_{object2D.id}";
+        instance.transform.SetParent(this.transform);
+
+        // Add the instance to the placedObjects list
+        placedObjects.Add(instance);
+
+        // Log the instantiation
+        Debug.Log($"Instantiated {instance.name} at position {position}");
     }
 
     // Update method to check for Enter key press
@@ -116,6 +151,10 @@ public class ObjectManager : MonoBehaviour
         }
     }
 }
+
+
+
+
 
 
 
