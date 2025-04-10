@@ -9,6 +9,15 @@ public class IsDragging : MonoBehaviour
 
     public bool isDragging = false;
 
+    private void Start()
+    {
+        // Ensure environmentId is initialized
+        if (string.IsNullOrEmpty(environmentId) && objectManager != null)
+        {
+            environmentId = objectManager.activeEnvironmentId;
+        }
+    }
+
     public void Update()
     {
         if (isDragging)

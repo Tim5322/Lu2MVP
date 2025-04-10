@@ -2102,6 +2102,7 @@ MonoBehaviour:
   Env2Text: {fileID: 1110415185}
   Env3Text: {fileID: 513274531}
   environment2DApiClient: {fileID: 2046676031}
+  objectManager: {fileID: 0}
 --- !u!1 &411524108
 GameObject:
   m_ObjectHideFlags: 0
@@ -43873,11 +43874,10 @@ MonoBehaviour:
     id: 8d3cd22e-120a-460c-8efe-c1dac57a4186
     name: ahgbaj
   object2D:
-    id: 
     prefabId: 
     positionX: 0
     positionY: 0
-    environmentId: 
+    environment2DId: 
   userApiClient: {fileID: 2046676028}
   enviroment2DApiClient: {fileID: 2046676031}
   object2DApiClient: {fileID: 2046676030}
@@ -45020,6 +45020,8 @@ MonoBehaviour:
   - {fileID: 5574886132160679925, guid: 707f3bdb3adf94c4a821ed1177bb580e, type: 3}
   - {fileID: 5546881560192215976, guid: 8b3024c32e0a2ca4e8645a2894ddf18e, type: 3}
   object2DApiClient: {fileID: 2046676030}
+  environment2DApiClient: {fileID: 0}
+  isDragging: {fileID: 0}
 --- !u!4 &1775009285
 Transform:
   m_ObjectHideFlags: 0
@@ -46141,7 +46143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89519458302f53e4cbc4411710c74ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseUrl: avansict2225864.azurewebsites.net
+  baseUrl: https://avansict2225864.azurewebsites.net
 --- !u!114 &2046676030
 MonoBehaviour:
   m_ObjectHideFlags: 0

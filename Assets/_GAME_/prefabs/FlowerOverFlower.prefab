@@ -102,6 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectManager: {fileID: 0}
+  environmentId: 
   isDragging: 0
 --- !u!61 &-3954143587431521377
 BoxCollider2D:

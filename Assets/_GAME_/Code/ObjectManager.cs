@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,7 +20,7 @@ public class ObjectManager : MonoBehaviour
     public IsDragging isDragging;
 
     // Veld voor het actieve environmentId
-    private string activeEnvironmentId;
+    public string activeEnvironmentId { get; private set; }
 
     // Methode om een nieuw 2D object te plaatsen
     public void PlaceNewObject2D(int index)
@@ -65,10 +64,9 @@ public class ObjectManager : MonoBehaviour
         // Zorg ervoor dat het object het juiste environment2DId heeft
         object2D.environment2DId = activeEnvironmentId;
 
-        //IWebRequestReponse response = await agendaApiClient.CreateAgenda(profielkeuzeId, newAgenda);
         Debug.Log($"Creating new Object2D with data: {JsonUtility.ToJson(object2D)}");
         IWebRequestReponse response = await object2DApiClient.CreateObject2D(object2D);
-        Debug.Log($"Received response: {response}");    
+        Debug.Log($"Received response: {response}");
         if (response is WebRequestData<Object2D> createdObject2D)
         {
             Debug.Log($"Object2D created successfully with ID: {createdObject2D.Data.id}");
@@ -78,6 +76,43 @@ public class ObjectManager : MonoBehaviour
         else
         {
             Debug.LogError("Failed to create Object2D.");
+        }
+    }
+
+    // Methode om alle Object2D's voor het actieve environmentId op te halen
+    public async void LoadObjectsForActiveEnvironment()
+    {
+        if (string.IsNullOrEmpty(activeEnvironmentId))
+        {
+            Debug.LogError("Active environment ID is not set.");
+            return;
+        }
+
+        Debug.Log($"Loading Object2Ds for environment ID: {activeEnvironmentId}");
+        IWebRequestReponse response = await object2DApiClient.ReadObject2Ds(activeEnvironmentId);
+        if (response is WebRequestData<List<Object2D>> object2DListResponse)
+        {
+            List<Object2D> object2DList = object2DListResponse.Data;
+            Debug.Log($"Loaded {object2DList.Count} Object2Ds.");
+            // Process the loaded objects as needed
+            foreach (var object2D in object2DList)
+            {
+                Debug.Log($"Object2D: {JsonUtility.ToJson(object2D)}");
+                // Instantiate or update objects in the scene based on the loaded data
+            }
+        }
+        else
+        {
+            Debug.LogError("Failed to load Object2Ds.");
+        }
+    }
+
+    // Update method to check for Enter key press
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            LoadObjectsForActiveEnvironment();
         }
     }
 }

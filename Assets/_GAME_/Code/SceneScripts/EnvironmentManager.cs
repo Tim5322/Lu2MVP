@@ -76,6 +76,11 @@ public class EnvironmentManager : MonoBehaviour
 
         UpdateUI();
         warningText.gameObject.SetActive(false); // Hide warning text initially
+
+        if(objectManager == null)
+        {
+            objectManager = FindFirstObjectByType<ObjectManager>();
+        }
     }
 
     private void UpdateUI()
@@ -196,6 +201,7 @@ public class EnvironmentManager : MonoBehaviour
 
                     PlayerPrefs.SetString("EnvironmentName" + currentEnvironmentIndex, createdEnvironment.name);
                     PlayerPrefs.SetString("EnvironmentId" + currentEnvironmentIndex, createdEnvironment.id);
+
                     UpdateUI();
                     BackToScene2();
 
