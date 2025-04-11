@@ -390,10 +390,17 @@ public class EnvironmentManager : MonoBehaviour
 
     private void ExitToScene2()
     {
+        // Destroy all placed objects before exiting
+        objectManager.DestroyAllPlacedObjects();
+
         Scene4.SetActive(false);
         Scene2.SetActive(true);
     }
 }
+
+
+
+
 
 
 

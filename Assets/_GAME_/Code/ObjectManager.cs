@@ -22,6 +22,9 @@ public class ObjectManager : MonoBehaviour
     // Veld voor het actieve environmentId
     public string activeEnvironmentId { get; private set; }
 
+    // Flag to track if objects have been loaded
+    private bool objectsLoaded = false;
+
     // Methode om een nieuw 2D object te plaatsen
     public void PlaceNewObject2D(int index)
     {
@@ -37,12 +40,16 @@ public class ObjectManager : MonoBehaviour
         isDragging.isDragging = true;
         // Stel het environmentId in op het IsDragging component
         isDragging.environmentId = activeEnvironmentId;
+
+        // Add the instance to the placedObjects list
+        placedObjects.Add(instanceOfPrefab);
     }
 
     // Methode om het actieve environmentId in te stellen
     public void SetActiveEnvironmentId(string environmentId)
     {
         activeEnvironmentId = environmentId;
+        objectsLoaded = false; // Reset the flag when the active environment changes
     }
 
     // Methode om het menu te tonen
@@ -88,6 +95,12 @@ public class ObjectManager : MonoBehaviour
             return;
         }
 
+        if (objectsLoaded)
+        {
+            Debug.Log("Objects have already been loaded for this environment.");
+            return;
+        }
+
         Debug.Log($"Loading Object2Ds for environment ID: {activeEnvironmentId}");
         IWebRequestReponse response = await object2DApiClient.ReadObject2Ds(activeEnvironmentId);
         if (response is WebRequestData<List<Object2D>> object2DListResponse)
@@ -96,6 +109,7 @@ public class ObjectManager : MonoBehaviour
             Debug.Log($"Loaded {object2DList.Count} Object2Ds.");
             // Process the loaded objects as needed
             InstantiateObjectsForEnvironment(object2DList);
+            objectsLoaded = true; // Set the flag to indicate that objects have been loaded
         }
         else
         {
@@ -146,6 +160,16 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
+    // Methode om alle geplaatste objecten te vernietigen
+    public void DestroyAllPlacedObjects()
+    {
+        foreach (var placedObject in placedObjects)
+        {
+            Destroy(placedObject);
+        }
+        placedObjects.Clear();
+    }
+
     // Update method to check for Enter key press
     private void Update()
     {
@@ -155,6 +179,12 @@ public class ObjectManager : MonoBehaviour
         }
     }
 }
+
+
+
+
+
+
 
 
 
