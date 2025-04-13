@@ -14,6 +14,7 @@ public class LoginManager : MonoBehaviour
     public GameObject SceneLoginRegister; // Referentie naar het login/register paneel
     public GameObject ChooseEnvironment;  // Referentie naar het choose environment paneel
     public EnvironmentManager environmentManager; // Referentie naar de EnvironmentManager
+    public TMP_Text warningText; // TextMeshProUGUI for displaying warning messages
 
     private void Start()
     {
@@ -21,6 +22,7 @@ public class LoginManager : MonoBehaviour
         loginButton.onClick.AddListener(Login);
         showPasswordToggle.onValueChanged.AddListener(TogglePasswordVisibility); // Voeg de listener toe voor de toggle
         passwordInputField.contentType = TMP_InputField.ContentType.Password; // Standaard wachtwoord verbergen
+        warningText.gameObject.SetActive(false); // Hide warning text initially
     }
 
     public async void Register()
@@ -85,10 +87,13 @@ public class LoginManager : MonoBehaviour
                     SceneLoginRegister.SetActive(false); // Verberg het login/register paneel
                     ChooseEnvironment.SetActive(true);  // Toon het choose environment paneel
                     environmentManager.FetchEnvironments(); // Fetch environments after login
+                    warningText.gameObject.SetActive(false); // Hide warning text on successful login
                     break;
                 case WebRequestError errorResponse:
                     string errorMessage = errorResponse.ErrorMessage;
                     Debug.Log("Login error: " + errorMessage);
+                    warningText.text = "Incorrect email or password."; // Set warning text
+                    warningText.gameObject.SetActive(true); // Show warning text
                     break;
                 default:
                     throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
@@ -97,6 +102,8 @@ public class LoginManager : MonoBehaviour
         catch (Exception ex)
         {
             Debug.LogError("Login exception: " + ex.Message);
+            warningText.text = "An error occurred. Please try again."; // Set warning text for exceptions
+            warningText.gameObject.SetActive(true); // Show warning text
         }
     }
 
@@ -106,4 +113,6 @@ public class LoginManager : MonoBehaviour
         passwordInputField.ForceLabelUpdate(); // Forceer een update om de wijziging door te voeren
     }
 }
+
+
 

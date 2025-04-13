@@ -161,11 +161,26 @@ public class EnvironmentManager : MonoBehaviour
             Debug.LogWarning("Environment name must be between 1 and 25 characters long.");
             return;
         }
-        if (environmentName == environmentName1 || environmentName == environmentName2 || environmentName == environmentName3)
+
+        // Fetch existing environments to check for duplicate names
+        IWebRequestReponse fetchResponse = await environment2DApiClient.ReadEnvironment2Ds();
+        if (fetchResponse is WebRequestData<List<Environment2D>> existingEnvironmentsResponse)
         {
-            Debug.LogWarning("Environment name must be unique.");
-            warningText.text = "Environment name must be unique.";
-            warningText.gameObject.SetActive(true); // Show warning text
+            List<Environment2D> existingEnvironments = existingEnvironmentsResponse.Data;
+            foreach (var env in existingEnvironments)
+            {
+                if (env.name == environmentName)
+                {
+                    Debug.LogWarning("Environment name must be unique.");
+                    warningText.text = "Environment name must be unique.";
+                    warningText.gameObject.SetActive(true); // Show warning text
+                    return;
+                }
+            }
+        }
+        else if (fetchResponse is WebRequestError fetchError)
+        {
+            Debug.LogError("Failed to fetch existing environments: " + fetchError.ErrorMessage);
             return;
         }
 
@@ -397,6 +412,9 @@ public class EnvironmentManager : MonoBehaviour
         Scene2.SetActive(true);
     }
 }
+
+
+
 
 
 

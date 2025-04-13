@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class Object2D
 {
-    public Guid? id;
+    public string id;
     public string prefabId;
     public int positionX;
     public int positionY;
